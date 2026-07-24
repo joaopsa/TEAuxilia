@@ -1,13 +1,13 @@
 import type { NextConfig } from "next";
-import withPWAInit from "next-pwa";
 
-const withPWA = withPWAInit({
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const withPWA = require("next-pwa")({
   dest: "public",
   disable: process.env.NODE_ENV === "development",
 });
 
 const nextConfig: NextConfig = {
-  turbopack: {}, // Libera o uso do Turbopack junto com o PWA
+  turbopack: {},
 };
 
 export default withPWA(nextConfig);
