@@ -67,16 +67,16 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-12">
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* Cabeçalho Ajustado Identico a Imagem */}
-        <header className="flex items-center justify-between gap-4 pb-2">
-          <div className="flex-1 flex items-center">
+        {/* Cabeçalho - Logo expansiva até o botão */}
+        <header className="flex items-center justify-between gap-6 pb-2">
+          <div className="flex-1 max-w-[calc(100%-200px)]">
             <Image
               src="/logo.svg"
               alt="TEAuxilia Logo"
-              width={600}
-              height={200}
+              width={800}
+              height={250}
               priority
-              className="h-28 sm:h-36 md:h-44 w-auto object-contain -ml-2"
+              className="w-full h-auto max-h-36 sm:max-h-44 md:max-h-52 object-contain object-left"
             />
           </div>
 
