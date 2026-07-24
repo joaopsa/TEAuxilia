@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import Image from 'next/image'
 import {
   Users,
   ClipboardList,
@@ -69,13 +70,20 @@ export default function HomePage() {
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Cabeçalho */}
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
-              <Users className="text-indigo-600" size={32} /> TEAuxilia
-            </h1>
-            <p className="text-slate-500 text-sm mt-1">
-              Painel de Acompanhamento Terapêutico e Evolução Clínica
-            </p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <Image
+              src="/logo.svg"
+              alt="TEAuxilia Logo"
+              width={200}
+              height={60}
+              priority
+              className="h-14 w-auto object-contain"
+            />
+            <div>
+              <p className="text-slate-500 text-sm mt-1">
+                Painel de Acompanhamento Terapêutico e Evolução Clínica
+              </p>
+            </div>
           </div>
 
           <Link

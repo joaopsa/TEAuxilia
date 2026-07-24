@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import Image from 'next/image'
 import {
   Printer,
   ArrowLeft,
@@ -141,13 +142,23 @@ export default function ReportPage({
       <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-2xl border border-slate-200 shadow-sm space-y-8 print:shadow-none print:border-none print:p-0">
         {/* Cabeçalho do Relatório */}
         <header className="border-b border-slate-200 pb-6 text-center md:text-left flex flex-col md:flex-row justify-between items-start gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-800">
-              Relatório de Acompanhamento Terapêutico
-            </h1>
-            <p className="text-sm text-slate-500 mt-1">
-              TEAuxilia — Avaliação e Evolução Clínica
-            </p>
+          <div className="space-y-3">
+            <Image
+              src="/logo.svg"
+              alt="TEAuxilia Logo"
+              width={200}
+              height={60}
+              priority
+              className="h-14 w-auto object-contain"
+            />
+            <div>
+              <h1 className="text-2xl font-bold text-slate-800">
+                Relatório de Acompanhamento Terapêutico
+              </h1>
+              <p className="text-sm text-slate-500 mt-1">
+                TEAuxilia — Avaliação e Evolução Clínica
+              </p>
+            </div>
           </div>
           <div className="text-xs text-slate-400 text-right">
             <p>Data de emissão:</p>
