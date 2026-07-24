@@ -7,7 +7,7 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  /* suas configurações atuais se houver */
+  turbopack: {}, // Libera o uso do Turbopack junto com o PWA
 };
 
 export default withPWA(nextConfig);
