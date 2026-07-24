@@ -146,7 +146,7 @@ export default function ReportPage({
               Relatório de Acompanhamento Terapêutico
             </h1>
             <p className="text-sm text-slate-500 mt-1">
-              TEA Tracker — Avaliação e Evolução Clínica
+              TEAuxilia — Avaliação e Evolução Clínica
             </p>
           </div>
           <div className="text-xs text-slate-400 text-right">
