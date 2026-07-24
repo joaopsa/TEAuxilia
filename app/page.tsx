@@ -5,7 +5,6 @@ import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import {
   Users,
-  ClipboardList,
   Eye,
   Calendar,
   Target,
@@ -68,27 +67,22 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-12">
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* Cabeçalho */}
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        {/* Cabeçalho Ajustado Identico a Imagem */}
+        <header className="flex items-center justify-between gap-4 pb-2">
+          <div className="flex-1 flex items-center">
             <Image
               src="/logo.svg"
               alt="TEAuxilia Logo"
-              width={350}
-              height={100}
+              width={600}
+              height={200}
               priority
-              className="h-20 sm:h-24 md:h-28 w-auto object-contain"
+              className="h-28 sm:h-36 md:h-44 w-auto object-contain -ml-2"
             />
-            <div>
-              <p className="text-slate-500 text-sm mt-1">
-                Painel de Acompanhamento Terapêutico e Evolução Clínica
-              </p>
-            </div>
           </div>
 
           <Link
             href="/patients/new"
-            className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition cursor-pointer self-start sm:self-center shadow-sm"
+            className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-3 rounded-2xl font-medium hover:bg-indigo-700 transition cursor-pointer shadow-sm shrink-0"
           >
             <UserPlus size={18} /> Cadastrar Paciente
           </Link>
