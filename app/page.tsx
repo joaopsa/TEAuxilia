@@ -74,10 +74,10 @@ export default function HomePage() {
             <Image
               src="/logo.svg"
               alt="TEAuxilia Logo"
-              width={200}
-              height={60}
+              width={350}
+              height={100}
               priority
-              className="h-14 w-auto object-contain"
+              className="h-20 sm:h-24 md:h-28 w-auto object-contain"
             />
             <div>
               <p className="text-slate-500 text-sm mt-1">
