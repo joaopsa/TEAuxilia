@@ -14,7 +14,6 @@ const supabase = createClient(
 export default function AnamnesisPage({ params }: { params: Promise<{ id: string }> | { id: string } }) {
   const router = useRouter()
   
-  // Trata params se vier como Promise (Next.js recente) ou objeto simples
   const resolvedParams = params instanceof Promise ? React.use(params) : params
   const patientId = resolvedParams.id
 
@@ -94,7 +93,6 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
     setState({ ...state, [key]: !state[key] })
   }
 
-  // Funções para gerenciar adição de itens personalizados nas seções existentes
   const handleAddCustomItem = (sectionKey: string, setState: React.Dispatch<React.SetStateAction<Record<string, boolean>>>) => {
     const text = (newItemInputs[sectionKey] || '').trim()
     if (!text) return
@@ -106,11 +104,9 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
       ...prev,
       [sectionKey]: [...prev[sectionKey], text]
     }))
-    // Limpa o input daquela seção
     setNewItemInputs(prev => ({ ...prev, [sectionKey]: '' }))
   }
 
-  // Funções para gerenciar novas Seções criadas pelo usuário
   const handleAddCustomSection = () => {
     if (!newSectionTitle.trim()) return
     const sectionId = 'sec_' + Date.now()
@@ -176,7 +172,6 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
       urgent_development_goal: urgentGoal,
       therapist_observations: therapistObs,
       notes,
-      // Salva também as seções customizadas criadas pelo usuário (caso sua tabela no Supabase suporte JSONB ou colunas extras)
       custom_sections: { customSections, customSectionValues }
     }
 
@@ -220,7 +215,6 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
           ))}
         </div>
 
-        {/* Campo para adicionar nova pergunta/checkbox nesta seção na hora */}
         {sectionKey && (
           <div className="flex items-center gap-2 pt-2">
             <input
@@ -246,7 +240,6 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-12">
       <form onSubmit={handleSubmit} className="max-w-5xl mx-auto space-y-8">
-        {/* Cabeçalho com botões de Ação */}
         <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-4">
           <div>
             <Link
@@ -460,68 +453,71 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
           )}
         </section>
 
-        {/* SEÇÕES CUSTOMIZADAS ADICIONADAS PELO USUÁRIO */}
-        {customSections.map((sec) => (
-          <section key={sec.id} className="bg-white p-6 rounded-2xl border-2 border-indigo-200 space-y-4 relative">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-indigo-700">{sec.title}</h2>
-              <button
-                type="button"
-                onClick={() => handleRemoveCustomSection(sec.id)}
-                className="text-red-500 hover:text-red-700 p-1 rounded-lg flex items-center gap-1 text-xs font-medium"
-              >
-                <Trash2 size={16} /> Remover Tópico
-              </button>
-            </div>
+        {/* SEÇÕES CUSTOMIZADAS ADICIONADAS PELO USUÁRIO (NUMERAÇÃO DINÂMICA) */}
+        {customSections.map((sec, index) => {
+          const sectionNumber = 9 + index
+          return (
+            <section key={sec.id} className="bg-white p-6 rounded-2xl border-2 border-indigo-200 space-y-4 relative">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-indigo-700">
+                  {sectionNumber}. {sec.title}
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveCustomSection(sec.id)}
+                  className="text-red-500 hover:text-red-700 p-1 rounded-lg flex items-center gap-1 text-xs font-medium"
+                >
+                  <Trash2 size={16} /> Remover Tópico
+                </button>
+              </div>
 
-            {/* Checkboxes do tópico customizado */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {sec.items.map((item) => {
-                const checked = customSectionValues[sec.id]?.[item] || false
-                return (
-                  <label
-                    key={item}
-                    className="flex items-center gap-2 p-3 border rounded-xl bg-slate-50 hover:bg-slate-100 cursor-pointer text-sm text-slate-700 transition"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => {
-                        setCustomSectionValues(prev => ({
-                          ...prev,
-                          [sec.id]: {
-                            ...(prev[sec.id] || {}),
-                            [item]: !checked
-                          }
-                        }))
-                      }}
-                      className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
-                    />
-                    {item}
-                  </label>
-                )
-              })}
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {sec.items.map((item) => {
+                  const checked = customSectionValues[sec.id]?.[item] || false
+                  return (
+                    <label
+                      key={item}
+                      className="flex items-center gap-2 p-3 border rounded-xl bg-slate-50 hover:bg-slate-100 cursor-pointer text-sm text-slate-700 transition"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => {
+                          setCustomSectionValues(prev => ({
+                            ...prev,
+                            [sec.id]: {
+                              ...(prev[sec.id] || {}),
+                              [item]: !checked
+                            }
+                          }))
+                        }}
+                        className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
+                      />
+                      {item}
+                    </label>
+                  )
+                })}
+              </div>
 
-            {/* Adicionar opção neste novo tópico */}
-            <div className="flex items-center gap-2 pt-2">
-              <input
-                type="text"
-                placeholder="Adicionar opção neste tópico..."
-                value={newSectionItemInputs[sec.id] || ''}
-                onChange={(e) => setNewSectionItemInputs({ ...newSectionItemInputs, [sec.id]: e.target.value })}
-                className="flex-1 p-2.5 text-sm border rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 bg-white"
-              />
-              <button
-                type="button"
-                onClick={() => handleAddCustomSectionItem(sec.id)}
-                className="flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-2.5 rounded-xl text-sm font-medium transition border border-indigo-200"
-              >
-                <Plus size={16} /> Adicionar Opção
-              </button>
-            </div>
-          </section>
-        ))}
+              <div className="flex items-center gap-2 pt-2">
+                <input
+                  type="text"
+                  placeholder="Adicionar opção neste tópico..."
+                  value={newSectionItemInputs[sec.id] || ''}
+                  onChange={(e) => setNewSectionItemInputs({ ...newSectionItemInputs, [sec.id]: e.target.value })}
+                  className="flex-1 p-2.5 text-sm border rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 bg-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleAddCustomSectionItem(sec.id)}
+                  className="flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-2.5 rounded-xl text-sm font-medium transition border border-indigo-200"
+                >
+                  <Plus size={16} /> Adicionar Opção
+                </button>
+              </div>
+            </section>
+          )
+        })}
 
         {/* BOTÃO PARA CRIAR UM NOVO TÓPICO / SEÇÃO COMPLETA */}
         <section className="bg-indigo-50/60 p-6 rounded-2xl border-2 border-dashed border-indigo-300 space-y-3">
@@ -529,7 +525,7 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
             <Plus size={18} className="text-indigo-600" /> Criar Novo Tópico / Seção na Anamnese
           </h3>
           <p className="text-xs text-slate-600">
-            Siu sentiu falta de algum assunto específico (ex: Habilidades Sociais Avançadas, Histórico Clínico, Sono, etc.), crie um novo tópico agora mesmo:
+            Se sentiu falta de algum assunto específico (ex: Habilidades Sociais Avançadas, Histórico Clínico, Sono, etc.), crie um novo tópico agora mesmo:
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-3">
             <input
@@ -549,9 +545,9 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
           </div>
         </section>
 
-        {/* 9. Interesses e Reforçadores */}
+        {/* 9+N. Interesses e Reforçadores */}
         <section className="bg-white p-6 rounded-2xl border border-slate-100 space-y-4">
-          <h2 className="text-lg font-semibold text-slate-700">9. Interesses e Reforçadores</h2>
+          <h2 className="text-lg font-semibold text-slate-700">{9 + customSections.length}. Interesses e Reforçadores</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               type="text"
@@ -591,9 +587,9 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
           </div>
         </section>
 
-        {/* 10. Objetivos da Família */}
+        {/* 10+N. Objetivos da Família */}
         <section className="bg-white p-6 rounded-2xl border border-slate-100 space-y-4">
-          <h2 className="text-lg font-semibold text-slate-700">10. Objetivos da Família</h2>
+          <h2 className="text-lg font-semibold text-slate-700">{10 + customSections.length}. Objetivos da Família</h2>
           <p className="text-sm text-slate-500">Quais são as três maiores dificuldades da criança hoje?</p>
           <input
             type="text"
@@ -625,9 +621,9 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
           />
         </section>
 
-        {/* 11. Planejamento Terapêutico e Observações */}
+        {/* 11+N. Planejamento Terapêutico e Observações */}
         <section className="bg-white p-6 rounded-2xl border border-slate-100 space-y-4">
-          <h2 className="text-lg font-semibold text-slate-700">11. Planejamento & Observações</h2>
+          <h2 className="text-lg font-semibold text-slate-700">{11 + customSections.length}. Planejamento & Observações</h2>
           <textarea
             placeholder="Observações do Terapeuta"
             rows={3}
