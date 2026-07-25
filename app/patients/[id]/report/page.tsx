@@ -45,7 +45,6 @@ export default function ReportPage({
   const [anamnesis, setAnamnesis] = useState<any>(null)
   const [attendance, setAttendance] = useState<any[]>([])
   const [peiGoals, setPeiGoals] = useState<any[]>([])
-  const [sessions, setSessions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   // Seleção da Janela de Tempo (3 Meses Atrás ou 3 Meses à Frente)
@@ -103,14 +102,6 @@ export default function ReportPage({
       .select('*')
       .eq('patient_id', patientId)
     if (gData) setPeiGoals(gData)
-
-    // 5. Histórico de Sessões
-    const { data: sData } = await supabase
-      .from('sessions')
-      .select('*')
-      .eq('patient_id', patientId)
-      .order('session_date', { ascending: false })
-    if (sData) setSessions(sData)
 
     setLoading(false)
   }
@@ -213,19 +204,18 @@ export default function ReportPage({
       </div>
 
       {/* Documento do Relatório */}
-      <div className="max-w-4xl mx-auto bg-white/95 p-8 md:p-12 rounded-2xl border border-slate-200 shadow-sm space-y-8 print:shadow-none print:border-none print:p-0 relative overflow-hidden">
+      <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-2xl border border-slate-200 shadow-sm space-y-8 print:shadow-none print:border-none print:p-0 relative overflow-hidden">
         
-        {/* LOGO DA CLÍNICA GIGANTE COMO MARCA D'ÁGUA NA FOLHA TODA */}
-        {/* Certifique-se de colocar a imagem da clínica com o nome 'logo-clinica.png' na pasta public */}
+        {/* LOGO DA CLÍNICA COMO MARCA D'ÁGUA DE FUNDO (Visível na tela e na impressão) */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
           <img 
             src="/logo-clinica.png" 
             alt="Marca d'água da Clínica" 
-            className="w-[750px] h-[750px] object-contain opacity-[0.06] select-none" 
+            className="w-[550px] h-[550px] object-contain opacity-[0.08] select-none print:opacity-[0.08]" 
           />
         </div>
 
-        {/* Conteúdo principal do relatório (z-10 para ficar acima da marca d'água) */}
+        {/* Conteúdo principal mantendo a estrutura e o tamanho de fonte original */}
         <div className="relative z-10 space-y-8">
           
           {/* Cabeçalho do Relatório com a Logo Oficial do App (logo.svg) */}
