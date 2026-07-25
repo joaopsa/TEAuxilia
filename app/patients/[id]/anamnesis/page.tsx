@@ -308,7 +308,7 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
       alert(`Erro ao salvar anamnese: ${error.message}`)
     } else {
       alert('Anamnese salva com sucesso!')
-      router.push(`/patients/${patientId}`)
+      router.push(`/patients/${patientId}/view-anamnesis`)
     }
     setLoading(false)
   }
