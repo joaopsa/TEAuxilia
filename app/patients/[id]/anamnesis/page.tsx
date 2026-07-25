@@ -803,7 +803,7 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
             disabled={loading}
             className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition cursor-pointer text-sm"
           >
-            <Save size5="18" /> {loading ? 'Salvando...' : 'Salvar Anamnese'}
+            <Save size={18} /> {loading ? 'Salvando...' : 'Salvar Anamnese'}
           </button>
         </div>
       </form>
