@@ -28,6 +28,20 @@ export default function SessionsPage({ params }: { params: Promise<{ id: string 
   const [evolutionNotes, setEvolutionNotes] = useState('')
   const [nextSteps, setNextSteps] = useState('')
 
+  // Avaliação de Habilidades para o Gráfico
+  const [skills, setSkills] = useState([
+    { name: 'Comunicação Funcional', score: 50 },
+    { name: 'Interação Social', score: 50 },
+    { name: 'Atenção Compartilhada', score: 50 },
+    { name: 'Tolerância à Frustração', score: 50 },
+  ])
+
+  const handleScoreChange = (index: number, newScore: number) => {
+    const updated = [...skills]
+    updated[index].score = newScore
+    setSkills(updated)
+  }
+
   useEffect(() => {
     fetchData()
   }, [patientId])
@@ -59,6 +73,7 @@ export default function SessionsPage({ params }: { params: Promise<{ id: string 
     e.preventDefault()
     setSaving(true)
 
+    // 1. Salva o registro geral da sessão
     const payload = {
       patient_id: patientId,
       session_date: sessionDate,
@@ -69,19 +84,37 @@ export default function SessionsPage({ params }: { params: Promise<{ id: string 
       next_steps: nextSteps,
     }
 
-    const { error } = await supabase.from('session_records').insert([payload])
+    const { error: sessionError } = await supabase.from('session_records').insert([payload])
 
-    if (error) {
-      alert(`Erro ao salvar sessão: ${error.message}`)
-    } else {
-      alert('Registro de evolução salvo com sucesso!')
-      // Limpa formulário
-      setActivities('')
-      setEvolutionNotes('')
-      setNextSteps('')
-      setShowForm(false)
-      fetchData() // Recarrega lista
+    if (sessionError) {
+      alert(`Erro ao salvar sessão: ${sessionError.message}`)
+      setSaving(false)
+      return
     }
+
+    // 2. Salva as notas de habilidades para o relatório dinâmico
+    const evaluationsToInsert = skills.map((skill) => ({
+      patient_id: patientId,
+      skill_name: skill.name,
+      score: skill.score,
+      created_at: new Date(sessionDate + 'T12:00:00').toISOString(),
+    }))
+
+    const { error: evalError } = await supabase
+      .from('session_skill_evaluations')
+      .insert(evaluationsToInsert)
+
+    if (evalError) {
+      console.error('Erro ao salvar avaliações de habilidades:', evalError.message)
+    }
+
+    alert('Registro de evolução e gráfico atualizados com sucesso!')
+    // Limpa formulário
+    setActivities('')
+    setEvolutionNotes('')
+    setNextSteps('')
+    setShowForm(false)
+    fetchData() // Recarrega lista
     setSaving(false)
   }
 
@@ -160,7 +193,38 @@ export default function SessionsPage({ params }: { params: Promise<{ id: string 
               </div>
             </div>
 
-            <div>
+            {/* Nova Seção: Avaliação de Habilidades (Gráfico) */}
+            <div className="space-y-4 pt-2 border-t">
+              <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider">Avaliação de Habilidades para o Gráfico (%)</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {skills.map((skill, index) => (
+                  <div key={skill.name} className="space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-medium text-slate-700">{skill.name}</span>
+                      <span className="font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg">
+                        {skill.score}%
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={skill.score}
+                      onChange={(e) => handleScoreChange(index, Number(e.target.value))}
+                      className="w-full accent-indigo-600 cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[10px] text-slate-400 font-medium">
+                      <span>0% (Ajuda total)</span>
+                      <span>50% (Parcial)</span>
+                      <span>100% (Independente)</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-2 border-t">
               <label className="text-xs font-medium text-slate-500 block mb-1">Atividades Desenvolvidas</label>
               <textarea
                 rows={2}
@@ -172,7 +236,7 @@ export default function SessionsPage({ params }: { params: Promise<{ id: string 
             </div>
 
             <div>
-              <label className="text-xs font-medium text-slate-500 block mb-1">Evolução Clínica / Desempenho Obseravdo</label>
+              <label className="text-xs font-medium text-slate-500 block mb-1">Evolução Clínica / Desempenho Observado</label>
               <textarea
                 rows={3}
                 placeholder="Descreva o progresso, autorregulação, respostas aos estímulos e estratégias utilizadas..."
