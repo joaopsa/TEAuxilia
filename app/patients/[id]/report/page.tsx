@@ -10,13 +10,23 @@ import {
   User,
   Calendar,
   Target,
-  Award,
   ThumbsUp,
   TrendingUp,
   AlertCircle,
   CheckCircle2,
+  LineChart as LineChartIcon,
 } from 'lucide-react'
 import Link from 'next/link'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -37,6 +47,9 @@ export default function ReportPage({
   const [peiGoals, setPeiGoals] = useState<any[]>([])
   const [sessions, setSessions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Seleção da Janela de Tempo (3 Meses Atrás ou 3 Meses à Frente)
+  const [chartPeriod, setChartPeriod] = useState<'past' | 'future'>('past')
 
   // Campos clínicos editáveis para emissão do relatório
   const [positivePoints, setPositivePoints] = useState(
@@ -111,6 +124,22 @@ export default function ReportPage({
   const totalPresents = attendance.filter((r) => r.status === 'Presente').length
   const attendanceRate =
     totalSessions > 0 ? Math.round((totalPresents / totalSessions) * 100) : 0
+
+  // Dados Mockados/Calculados para o Gráfico de Evolução de 3 em 3 Meses
+  const pastData = [
+    { mes: 'Maio', Evolução: 60, Estagnação: 25, Regressão: 15 },
+    { mes: 'Junho', Evolução: 65, Estagnação: 25, Regressão: 10 },
+    { mes: 'Julho (Atual)', Evolução: 78, Estagnação: 14, Regressão: 8 },
+  ]
+
+  const futureData = [
+    { mes: 'Julho (Atual)', Evolução: 78, Estagnação: 14, Regressão: 8 },
+    { mes: 'Agosto (Meta)', Evolução: 82, Estagnação: 12, Regressão: 6 },
+    { mes: 'Setembro (Meta)', Evolução: 88, Estagnação: 8, Regressão: 4 },
+    { mes: 'Outubro (Meta)', Evolução: 92, Estagnação: 5, Regressão: 3 },
+  ]
+
+  const chartData = chartPeriod === 'past' ? pastData : futureData
 
   if (loading) {
     return (
@@ -263,7 +292,82 @@ export default function ReportPage({
           </div>
         </section>
 
-        {/* 4. Pontos Positivos (O que o paciente já sabe) */}
+        {/* NVO: SEÇÃO DE GRÁFICOS DE EVOLUÇÃO TRIMESTRAL */}
+        <section className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-1">
+            <h2 className="text-base font-bold text-slate-800 uppercase tracking-wider text-indigo-700 flex items-center gap-2">
+              <LineChartIcon size={18} /> Gráfico Comparativo de Desempenho (%)
+            </h2>
+
+            {/* Controles do Período (Oculto na impressão) */}
+            <div className="flex items-center gap-2 print:hidden text-xs">
+              <button
+                type="button"
+                onClick={() => setChartPeriod('past')}
+                className={`px-3 py-1 rounded-lg font-semibold transition ${
+                  chartPeriod === 'past'
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                Mês Atual + 3 Meses Atrás
+              </button>
+              <button
+                type="button"
+                onClick={() => setChartPeriod('future')}
+                className={`px-3 py-1 rounded-lg font-semibold transition ${
+                  chartPeriod === 'future'
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                Mês Atual + Projeção 3 Meses
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <p className="text-xs text-slate-500 mb-4">
+              Comparativo trimestral mostrando a taxa de <strong>Evolução</strong>, 
+              <strong> Estagnação</strong> e <strong>Regressão</strong> nos objetivos trabalhados.
+            </p>
+
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis dataKey="mes" stroke="#64748b" fontSize={12} />
+                  <YAxis stroke="#64748b" fontSize={12} domain={[0, 100]} />
+                  <Tooltip />
+                  <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
+                  <Line
+                    type="monotone"
+                    dataKey="Evolução"
+                    stroke="#10b981"
+                    strokeWidth={3}
+                    dot={{ r: 5 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="Estagnação"
+                    stroke="#f59e0b"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="Regressão"
+                    stroke="#ef4444"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </section>
+
+        {/* 4. Pontos Positivos */}
         <section className="space-y-3">
           <h2 className="text-base font-bold text-emerald-700 uppercase tracking-wider border-b pb-1 flex items-center gap-2">
             <ThumbsUp size={18} /> Pontos Positivos / Habilidades Adquiridas
@@ -291,7 +395,7 @@ export default function ReportPage({
           />
         </section>
 
-        {/* 6. Pontos a Melhorar (Intervenção Necessária) */}
+        {/* 6. Pontos a Melhorar */}
         <section className="space-y-3">
           <h2 className="text-base font-bold text-amber-700 uppercase tracking-wider border-b pb-1 flex items-center gap-2">
             <AlertCircle size={18} /> Pontos a Melhorar / Necessitam de Maior Intervenção
