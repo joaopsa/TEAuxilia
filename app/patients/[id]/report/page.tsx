@@ -225,10 +225,10 @@ export default function ReportPage({
               <Image
                 src="/logo.svg"
                 alt="TEAuxilia Logo"
-                width={160}
-                height={50}
+                width={220}
+                height={70}
                 priority
-                className="h-12 w-auto object-contain"
+                className="h-20 w-auto object-contain"
               />
               <div>
                 <h1 className="text-2xl font-bold text-slate-800">
