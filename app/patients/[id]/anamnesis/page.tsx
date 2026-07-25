@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { ClipboardList, Save, CheckSquare, ArrowLeft, X, Plus, Trash2 } from 'lucide-react'
+import { ClipboardList, Save, CheckSquare, ArrowLeft, X, Plus, Trash2, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -18,6 +18,8 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
   const patientId = resolvedParams.id
 
   const [loading, setLoading] = useState(false)
+  const [fetching, setFetching] = useState(true)
+  const [existingId, setExistingId] = useState<string | null>(null)
 
   // Campos de texto
   const [schoolGrade, setSchoolGrade] = useState('')
@@ -85,6 +87,82 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
   const [newSectionItemInputs, setNewSectionItemInputs] = useState<Record<string, string>>({})
   const [customSectionValues, setCustomSectionValues] = useState<Record<string, Record<string, boolean>>>({})
 
+  // Buscar anamnese existente ao carregar a página
+  useEffect(() => {
+    async function fetchAnamnesis() {
+      if (!patientId || patientId === '123') {
+        setFetching(false)
+        return
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('anamneses')
+          .select('*')
+          .eq('patient_id', patientId)
+          .order('created_at', { ascending: false })
+          .limit(1)
+
+        if (error) {
+          console.error('Erro ao buscar anamnese:', error)
+        } else if (data && data.length > 0) {
+          const item = data[0]
+          setExistingId(item.id)
+
+          setSchoolGrade(item.school_grade || '')
+          setMedications(item.medications || '')
+          setAllergies(item.allergies || '')
+          setAdditionalDisabilities(item.additional_disabilities || '')
+          setStereotypiesDetails(item.stereotypies_details || '')
+          setScreenTime(item.screen_time || '')
+
+          setFavoriteToys(item.favorite_toys || '')
+          setFavoriteCartoons(item.favorite_cartoons || '')
+          setFavoriteFoods(item.favorite_foods || '')
+          setChildMotivators(item.child_motivators || '')
+          setDislikes(item.dislikes || '')
+
+          setDiff1(item.main_difficulty_1 || '')
+          setDiff2(item.main_difficulty_2 || '')
+          setDiff3(item.main_difficulty_3 || '')
+          setUrgentGoal(item.urgent_development_goal || '')
+
+          setTherapistObs(item.therapist_observations || '')
+          setNotes(item.notes || '')
+
+          if (item.communication) setCommunication(item.communication)
+          if (item.social_interaction) setSocialInteraction(item.social_interaction)
+          if (item.academic_skills) setAcademicSkills(item.academic_skills)
+          if (item.behaviors) setBehaviors(item.behaviors)
+          if (item.sensory_profile) setSensoryProfile(item.sensory_profile)
+          if (item.avd_feeding) setAvdFeeding(item.avd_feeding)
+          if (item.avd_hygiene) setAvdHygiene(item.avd_hygiene)
+          if (item.avd_bathroom) setAvdBathroom(item.avd_bathroom)
+          if (item.avd_dressing) setAvdDressing(item.avd_dressing)
+          if (item.avdi_belongings) setAvdiBelongings(item.avdi_belongings)
+          if (item.avdi_routines) setAvdiRoutines(item.avdi_routines)
+          if (item.avdi_tech_comm) setAvdiTechComm(item.avdi_tech_comm)
+
+          // Restaurar custom_sections se houver
+          if (item.custom_sections) {
+            if (item.custom_sections.customSections) {
+              setCustomSections(item.custom_sections.customSections)
+            }
+            if (item.custom_sections.customSectionValues) {
+              setCustomSectionValues(item.custom_sections.customSectionValues)
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Erro inesperado ao buscar anamnese:', err)
+      } finally {
+        setFetching(false)
+      }
+    }
+
+    fetchAnamnesis()
+  }, [patientId])
+
   const handleToggle = (
     state: Record<string, boolean>,
     setState: React.Dispatch<React.SetStateAction<Record<string, boolean>>>,
@@ -131,11 +209,49 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
     setNewSectionItemInputs(prev => ({ ...prev, [sectionId]: '' }))
   }
 
+  // Função para limpar e iniciar uma Nova Anamnese do zero
+  const handleStartFresh = () => {
+    if (confirm('Deseja limpar todos os campos atuais para iniciar uma nova anamnese em branco?')) {
+      setExistingId(null)
+      setSchoolGrade('')
+      setMedications('')
+      setAllergies('')
+      setAdditionalDisabilities('')
+      setStereotypiesDetails('')
+      setScreenTime('')
+      setFavoriteToys('')
+      setFavoriteCartoons('')
+      setFavoriteFoods('')
+      setChildMotivators('')
+      setDislikes('')
+      setDiff1('')
+      setDiff2('')
+      setDiff3('')
+      setUrgentGoal('')
+      setTherapistObs('')
+      setNotes('')
+      setCommunication({})
+      setSocialInteraction({})
+      setAcademicSkills({})
+      setBehaviors({})
+      setSensoryProfile({})
+      setAvdFeeding({})
+      setAvdHygiene({})
+      setAvdBathroom({})
+      setAvdDressing({})
+      setAvdiBelongings({})
+      setAvdiRoutines({})
+      setAvdiTechComm({})
+      setCustomSections([])
+      setCustomSectionValues({})
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!patientId || patientId === '123') {
-      alert('Atenção: Acesse a anamnese diretamente a partir da lista de pacientes para salvar com um ID de paciente válido!')
+      alert('Atenção: Acesse a anamnese diretamente a partir da lista de pacientes para salvar com um ID válido!')
       return
     }
 
@@ -175,7 +291,17 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
       custom_sections: { customSections, customSectionValues }
     }
 
-    const { error } = await supabase.from('anamneses').insert([payload])
+    let error = null
+
+    if (existingId) {
+      // Atualiza a anamnese existente (Modo Edição)
+      const res = await supabase.from('anamneses').update(payload).eq('id', existingId)
+      error = res.error
+    } else {
+      // Cria um novo registro (Nova Anamnese)
+      const res = await supabase.from('anamneses').insert([payload])
+      error = res.error
+    }
 
     if (error) {
       console.error('Erro detalhado Supabase:', error)
@@ -237,6 +363,14 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
     )
   }
 
+  if (fetching) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <p className="text-slate-600 font-medium">Carregando anamnese...</p>
+      </div>
+    )
+  }
+
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-12">
       <form onSubmit={handleSubmit} className="max-w-5xl mx-auto space-y-8">
@@ -248,12 +382,27 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
             >
               <ArrowLeft size={14} /> Voltar para o início
             </Link>
-            <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-              <ClipboardList className="text-indigo-600" /> Ficha de Anamnese Comportamental, AVDs e AVDIs
-            </h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                <ClipboardList className="text-indigo-600" /> Ficha de Anamnese Comportamental, AVDs e AVDIs
+              </h1>
+              <span className={`text-xs px-2.5 py-1 rounded-full font-semibold ${existingId ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                {existingId ? 'Modo Edição' : 'Nova Anamnese'}
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            {existingId && (
+              <button
+                type="button"
+                onClick={handleStartFresh}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 font-medium text-sm hover:bg-amber-100 transition"
+              >
+                <RefreshCw size={16} /> Nova Anamnese (Limpar)
+              </button>
+            )}
+
             <Link
               href="/"
               className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium text-sm hover:bg-slate-100 transition"
@@ -545,7 +694,7 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
           </div>
         </section>
 
-        {/* 9+N. Interesses e Reforçadores */}
+        {/* Interesses e Reforçadores */}
         <section className="bg-white p-6 rounded-2xl border border-slate-100 space-y-4">
           <h2 className="text-lg font-semibold text-slate-700">{9 + customSections.length}. Interesses e Reforçadores</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -587,7 +736,7 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
           </div>
         </section>
 
-        {/* 10+N. Objetivos da Família */}
+        {/* Objetivos da Família */}
         <section className="bg-white p-6 rounded-2xl border border-slate-100 space-y-4">
           <h2 className="text-lg font-semibold text-slate-700">{10 + customSections.length}. Objetivos da Família</h2>
           <p className="text-sm text-slate-500">Quais são as três maiores dificuldades da criança hoje?</p>
@@ -621,7 +770,7 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
           />
         </section>
 
-        {/* 11+N. Planejamento Terapêutico e Observações */}
+        {/* Planejamento Terapêutico e Observações */}
         <section className="bg-white p-6 rounded-2xl border border-slate-100 space-y-4">
           <h2 className="text-lg font-semibold text-slate-700">{11 + customSections.length}. Planejamento & Observações</h2>
           <textarea
@@ -654,7 +803,7 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
             disabled={loading}
             className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition cursor-pointer text-sm"
           >
-            <Save size={18} /> {loading ? 'Salvando...' : 'Salvar Anamnese'}
+            <Save size5="18" /> {loading ? 'Salvando...' : 'Salvar Anamnese'}
           </button>
         </div>
       </form>
