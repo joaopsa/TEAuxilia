@@ -99,10 +99,6 @@ export default function ViewAnamnesisPage({ params }: { params: Promise<{ id: st
   const renderCheckedItems = (dataObj: any) => {
     if (!dataObj || typeof dataObj !== 'object') return <p className="text-sm text-slate-500 italic">Nenhum registro informado.</p>
     
-    // Filtra apenas as chaves que possuem o valor true
-    const renderCheckedItems = (dataObj: any) => {
-    if (!dataObj || typeof dataObj !== 'object') return <p className="text-sm text-slate-500 italic">Nenhum registro informado.</p>
-    
     const selectedEntries = Object.entries(dataObj).filter(([key, value]) => value === true)
 
     if (selectedEntries.length === 0) {
