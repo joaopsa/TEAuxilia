@@ -100,6 +100,9 @@ export default function ViewAnamnesisPage({ params }: { params: Promise<{ id: st
     if (!dataObj || typeof dataObj !== 'object') return <p className="text-sm text-slate-500 italic">Nenhum registro informado.</p>
     
     // Filtra apenas as chaves que possuem o valor true
+    const renderCheckedItems = (dataObj: any) => {
+    if (!dataObj || typeof dataObj !== 'object') return <p className="text-sm text-slate-500 italic">Nenhum registro informado.</p>
+    
     const selectedEntries = Object.entries(dataObj).filter(([key, value]) => value === true)
 
     if (selectedEntries.length === 0) {
@@ -272,7 +275,7 @@ export default function ViewAnamnesisPage({ params }: { params: Promise<{ id: st
         {/* 8. Análise Sensorial */}
         <section className="bg-white p-6 rounded-2xl border border-slate-100 space-y-3 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-700 border-b pb-2">8. Análise Sensorial</h2>
-          {renderCheckedItems(anamnesis.sensory_profile)}
+          {renderCheckedItems(anamnesis.sensory_profile || anamnesis.sensoryProfile)}
         </section>
 
         {/* Seções Customizadas Dinâmicas */}
