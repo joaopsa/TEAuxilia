@@ -206,12 +206,12 @@ export default function ReportPage({
       {/* Documento do Relatório */}
       <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-2xl border border-slate-200 shadow-sm space-y-8 print:shadow-none print:border-none print:p-0 relative overflow-hidden">
         
-        {/* LOGO DA CLÍNICA COMO MARCA D'ÁGUA DE FUNDO */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
+        {/* LOGO DA CLÍNICA COMO MARCA D'ÁGUA REPETIDA EM CADA PÁGINA */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden print:fixed print:inset-0">
           <img 
             src="/logo-clinica.png" 
             alt="Marca d'água da Clínica" 
-            style={{ width: '500px', height: '500px', opacity: 0.08 }}
+            style={{ width: '550px', height: '550px', opacity: 0.09 }}
             className="object-contain select-none" 
           />
         </div>
