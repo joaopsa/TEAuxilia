@@ -249,9 +249,9 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!patientId || patientId === '123') {
-      alert('Atenção: Acesse a anamnese diretamente a partir da lista de pacientes para salvar com um ID válido!')
+      alert('Atenção: Acesse a anamnese diretamente a partir da lista de pacientes para salvar com um ID válido')
       return
     }
 
@@ -308,7 +308,7 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
       alert(`Erro ao salvar anamnese: ${error.message}`)
     } else {
       alert('Anamnese salva com sucesso!')
-      router.push('/')
+      router.push(`/patients/${patientId}`)
     }
     setLoading(false)
   }
