@@ -126,7 +126,6 @@ export default function ReportPage({
     totalSessions > 0 ? Math.round((totalPresents / totalSessions) * 100) : 0
 
   // Dados das Habilidades/Objetivos Específicos ao longo do tempo (%)
-  // Linha subindo = Evoluindo | Linha reta = Estagnada | Linha caindo = Regredindo
   const pastData = [
     {
       mes: 'Maio',
@@ -410,28 +409,28 @@ export default function ReportPage({
                   <Line
                     type="monotone"
                     dataKey="Comunicação Funcional"
-                    stroke="#10b981" // Verde (Evoluindo)
+                    stroke="#10b981"
                     strokeWidth={3}
                     dot={{ r: 5 }}
                   />
                   <Line
                     type="monotone"
                     dataKey="Interação Social"
-                    stroke="#3b82f6" // Azul (Evoluindo)
+                    stroke="#3b82f6"
                     strokeWidth={3}
                     dot={{ r: 5 }}
                   />
                   <Line
                     type="monotone"
                     dataKey="Atenção Compartilhada"
-                    stroke="#f59e0b" // Amarelo/Laranja (Estagnada)
+                    stroke="#f59e0b"
                     strokeWidth={3}
                     dot={{ r: 5 }}
                   />
                   <Line
                     type="monotone"
                     dataKey="Tolerância à Frustração"
-                    stroke="#ef4444" // Vermelho (Regredindo)
+                    stroke="#ef4444"
                     strokeWidth={3}
                     dot={{ r: 5 }}
                   />
