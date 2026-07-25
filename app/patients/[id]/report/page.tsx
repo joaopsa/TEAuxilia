@@ -80,9 +80,9 @@ export default function ReportPage({
       .single()
     if (pData) setPatient(pData)
 
-    // 2. Anamnese
+    // 2. Anamnese (Corrigido para 'anamneses')
     const { data: aData } = await supabase
-      .from('anamnesis')
+      .from('anamneses')
       .select('*')
       .eq('patient_id', patientId)
       .single()
