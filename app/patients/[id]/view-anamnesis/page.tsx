@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { ClipboardList, ArrowLeft, CheckSquare, Printer } from 'lucide-react'
-import Link from 'next/navigation' // ou de 'next/link' conforme sua estrutura original
+import { ClipboardList, ArrowLeft, CheckSquare, Printer, Edit3 } from 'lucide-react'
+import Link from 'next/link'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -73,15 +73,23 @@ export default function ViewAnamnesisPage({ params }: { params: Promise<{ id: st
   if (!anamnesis) {
     return (
       <main className="min-h-screen bg-slate-50 p-6 md:p-12 max-w-4xl mx-auto space-y-6">
-        <a
-          href="/"
+        <Link
+          href={`/patients/${resolvedParams?.id}`}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 mb-1 transition uppercase tracking-wider"
         >
-          <ArrowLeft size={14} /> Voltar
-        </a>
+          <ArrowLeft size={14} /> Voltar para o Paciente
+        </Link>
         <div className="bg-white p-8 rounded-2xl border border-slate-100 text-center space-y-4">
           <h1 className="text-xl font-bold text-slate-800">Nenhuma Anamnese encontrada</h1>
           <p className="text-slate-600 text-sm">Ainda não foi preenchida nenhuma ficha de anamnese para este paciente.</p>
+          <div className="pt-2">
+            <Link
+              href={`/patients/${resolvedParams?.id}/anamnesis`}
+              className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition text-sm"
+            >
+              Preencher Anamnese Agora
+            </Link>
+          </div>
         </div>
       </main>
     )
@@ -122,12 +130,12 @@ export default function ViewAnamnesisPage({ params }: { params: Promise<{ id: st
         {/* Cabeçalho */}
         <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-4 print:hidden">
           <div>
-            <a
-              href="/"
+            <Link
+              href={`/patients/${resolvedParams?.id}`}
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 mb-1 transition uppercase tracking-wider"
             >
-              <ArrowLeft size={14} /> Voltar para o início
-            </a>
+              <ArrowLeft size={14} /> Voltar para o Paciente
+            </Link>
             <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
               <ClipboardList className="text-indigo-600" /> Visualização de Anamnese
             </h1>
@@ -136,12 +144,21 @@ export default function ViewAnamnesisPage({ params }: { params: Promise<{ id: st
             )}
           </div>
 
-          <button
-            onClick={() => window.print()}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition cursor-pointer text-sm"
-          >
-            <Printer size={16} /> Imprimir / Salvar PDF
-          </button>
+          <div className="flex items-center gap-3 flex-wrap">
+            <Link
+              href={`/patients/${resolvedParams?.id}/anamnesis`}
+              className="flex items-center gap-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 px-4 py-2.5 rounded-xl font-medium hover:bg-indigo-100 transition text-sm"
+            >
+              <Edit3 size={16} /> Editar Anamnese
+            </Link>
+
+            <button
+              onClick={() => window.print()}
+              className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition cursor-pointer text-sm"
+            >
+              <Printer size={16} /> Imprimir / Salvar PDF
+            </button>
+          </div>
         </header>
 
         {/* 1. Contexto Escolar e Medicamentos */}
@@ -252,7 +269,7 @@ export default function ViewAnamnesisPage({ params }: { params: Promise<{ id: st
           </div>
         </section>
 
-        {/* 8. Análise Sensorial (Corrigido para exibir corretamente o texto das tags selecionadas) */}
+        {/* 8. Análise Sensorial */}
         <section className="bg-white p-6 rounded-2xl border border-slate-100 space-y-3 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-700 border-b pb-2">8. Análise Sensorial</h2>
           {renderCheckedItems(anamnesis.sensory_profile)}
