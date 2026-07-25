@@ -104,7 +104,7 @@ export default function ReportPage({
       .eq('patient_id', patientId)
     if (gData) setPeiGoals(gData)
 
-    // 5. Histórico de Sessões / Evolução
+    // 5. Histórico de Sessões
     const { data: sData } = await supabase
       .from('sessions')
       .select('*')
@@ -125,18 +125,61 @@ export default function ReportPage({
   const attendanceRate =
     totalSessions > 0 ? Math.round((totalPresents / totalSessions) * 100) : 0
 
-  // Dados Mockados/Calculados para o Gráfico de Evolução de 3 em 3 Meses
+  // Dados das Habilidades/Objetivos Específicos ao longo do tempo (%)
+  // Linha subindo = Evoluindo | Linha reta = Estagnada | Linha caindo = Regredindo
   const pastData = [
-    { mes: 'Maio', Evolução: 60, Estagnação: 25, Regressão: 15 },
-    { mes: 'Junho', Evolução: 65, Estagnação: 25, Regressão: 10 },
-    { mes: 'Julho (Atual)', Evolução: 78, Estagnação: 14, Regressão: 8 },
+    {
+      mes: 'Maio',
+      'Comunicação Funcional': 40,
+      'Atenção Compartilhada': 50,
+      'Tolerância à Frustração': 60,
+      'Interação Social': 30,
+    },
+    {
+      mes: 'Junho',
+      'Comunicação Funcional': 55,
+      'Atenção Compartilhada': 50,
+      'Tolerância à Frustração': 50,
+      'Interação Social': 45,
+    },
+    {
+      mes: 'Julho (Atual)',
+      'Comunicação Funcional': 75,
+      'Atenção Compartilhada': 50,
+      'Tolerância à Frustração': 45,
+      'Interação Social': 65,
+    },
   ]
 
   const futureData = [
-    { mes: 'Julho (Atual)', Evolução: 78, Estagnação: 14, Regressão: 8 },
-    { mes: 'Agosto (Meta)', Evolução: 82, Estagnação: 12, Regressão: 6 },
-    { mes: 'Setembro (Meta)', Evolução: 88, Estagnação: 8, Regressão: 4 },
-    { mes: 'Outubro (Meta)', Evolução: 92, Estagnação: 5, Regressão: 3 },
+    {
+      mes: 'Julho (Atual)',
+      'Comunicação Funcional': 75,
+      'Atenção Compartilhada': 50,
+      'Tolerância à Frustração': 45,
+      'Interação Social': 65,
+    },
+    {
+      mes: 'Agosto (Meta)',
+      'Comunicação Funcional': 80,
+      'Atenção Compartilhada': 60,
+      'Tolerância à Frustração': 55,
+      'Interação Social': 75,
+    },
+    {
+      mes: 'Setembro (Meta)',
+      'Comunicação Funcional': 85,
+      'Atenção Compartilhada': 70,
+      'Tolerância à Frustração': 65,
+      'Interação Social': 80,
+    },
+    {
+      mes: 'Outubro (Meta)',
+      'Comunicação Funcional': 90,
+      'Atenção Compartilhada': 80,
+      'Tolerância à Frustração': 75,
+      'Interação Social': 85,
+    },
   ]
 
   const chartData = chartPeriod === 'past' ? pastData : futureData
@@ -144,7 +187,9 @@ export default function ReportPage({
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-        <p className="text-slate-500 font-medium">Gerando relatório do paciente...</p>
+        <p className="text-slate-500 font-medium">
+          Gerando relatório do paciente...
+        </p>
       </div>
     )
   }
@@ -204,7 +249,9 @@ export default function ReportPage({
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm bg-slate-50 p-4 rounded-xl border border-slate-100">
             <div>
-              <span className="text-xs text-slate-400 font-medium block">Nome</span>
+              <span className="text-xs text-slate-400 font-medium block">
+                Nome
+              </span>
               <p className="font-semibold text-slate-800">{patient?.name}</p>
             </div>
             <div>
@@ -281,22 +328,27 @@ export default function ReportPage({
               <span className="text-xs text-emerald-600 font-semibold uppercase block">
                 Presenças
               </span>
-              <p className="text-xl font-bold text-emerald-700">{totalPresents}</p>
+              <p className="text-xl font-bold text-emerald-700">
+                {totalPresents}
+              </p>
             </div>
             <div className="bg-indigo-50 p-3 rounded-xl border border-indigo-100">
               <span className="text-xs text-indigo-600 font-semibold uppercase block">
                 Taxa de Assiduidade
               </span>
-              <p className="text-xl font-bold text-indigo-700">{attendanceRate}%</p>
+              <p className="text-xl font-bold text-indigo-700">
+                {attendanceRate}%
+              </p>
             </div>
           </div>
         </section>
 
-        {/* NVO: SEÇÃO DE GRÁFICOS DE EVOLUÇÃO TRIMESTRAL */}
+        {/* SEÇÃO DE GRÁFICOS COM NOME DAS HABILIDADES/OBJETIVOS */}
         <section className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-1">
             <h2 className="text-base font-bold text-slate-800 uppercase tracking-wider text-indigo-700 flex items-center gap-2">
-              <LineChartIcon size={18} /> Gráfico Comparativo de Desempenho (%)
+              <LineChartIcon size={18} /> Acompanhamento de Habilidades e
+              Objetivos (%)
             </h2>
 
             {/* Controles do Período (Oculto na impressão) */}
@@ -326,15 +378,30 @@ export default function ReportPage({
             </div>
           </div>
 
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-            <p className="text-xs text-slate-500 mb-4">
-              Comparativo trimestral mostrando a taxa de <strong>Evolução</strong>, 
-              <strong> Estagnação</strong> e <strong>Regressão</strong> nos objetivos trabalhados.
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+            <p className="text-xs text-slate-500">
+              Acompanhamento do desenvolvimento de habilidades específicas ao
+              longo do trimestre: <br />
+              <span className="text-emerald-600 font-semibold">
+                ▲ Linha em alta
+              </span>{' '}
+              = Evolução |{' '}
+              <span className="text-amber-600 font-semibold">
+                ▬ Linha plana
+              </span>{' '}
+              = Estagnação |{' '}
+              <span className="text-rose-600 font-semibold">
+                ▼ Linha em queda
+              </span>{' '}
+              = Regressão
             </p>
 
-            <div className="h-64 w-full">
+            <div className="h-72 w-full pt-2">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+                <LineChart
+                  data={chartData}
+                  margin={{ top: 10, right: 20, left: -20, bottom: 0 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis dataKey="mes" stroke="#64748b" fontSize={12} />
                   <YAxis stroke="#64748b" fontSize={12} domain={[0, 100]} />
@@ -342,24 +409,31 @@ export default function ReportPage({
                   <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
                   <Line
                     type="monotone"
-                    dataKey="Evolução"
-                    stroke="#10b981"
+                    dataKey="Comunicação Funcional"
+                    stroke="#10b981" // Verde (Evoluindo)
                     strokeWidth={3}
                     dot={{ r: 5 }}
                   />
                   <Line
                     type="monotone"
-                    dataKey="Estagnação"
-                    stroke="#f59e0b"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
+                    dataKey="Interação Social"
+                    stroke="#3b82f6" // Azul (Evoluindo)
+                    strokeWidth={3}
+                    dot={{ r: 5 }}
                   />
                   <Line
                     type="monotone"
-                    dataKey="Regressão"
-                    stroke="#ef4444"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
+                    dataKey="Atenção Compartilhada"
+                    stroke="#f59e0b" // Amarelo/Laranja (Estagnada)
+                    strokeWidth={3}
+                    dot={{ r: 5 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="Tolerância à Frustração"
+                    stroke="#ef4444" // Vermelho (Regredindo)
+                    strokeWidth={3}
+                    dot={{ r: 5 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -398,7 +472,8 @@ export default function ReportPage({
         {/* 6. Pontos a Melhorar */}
         <section className="space-y-3">
           <h2 className="text-base font-bold text-amber-700 uppercase tracking-wider border-b pb-1 flex items-center gap-2">
-            <AlertCircle size={18} /> Pontos a Melhorar / Necessitam de Maior Intervenção
+            <AlertCircle size={18} /> Pontos a Melhorar / Necessitam de Maior
+            Intervenção
           </h2>
           <textarea
             value={improvementPoints}
@@ -426,7 +501,9 @@ export default function ReportPage({
                   className="p-3 border rounded-xl bg-slate-50 text-sm flex justify-between items-start gap-3"
                 >
                   <div>
-                    <p className="font-semibold text-slate-800">{goal.description}</p>
+                    <p className="font-semibold text-slate-800">
+                      {goal.description}
+                    </p>
                     {goal.target_date && (
                       <span className="text-xs text-slate-400">
                         Previsão:{' '}
