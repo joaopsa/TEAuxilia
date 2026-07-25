@@ -196,12 +196,12 @@ export default function ReportPage({
   return (
     <main className="min-h-screen bg-slate-100 p-4 md:p-12 print:p-0 print:bg-white relative overflow-hidden">
       
-      {/* 🌟 ADICIONADO: Marca d'água da logo ao fundo (não interfere nos cliques e sai suave) */}
+      {/* Marca d'água de fundo atualizada para logo.png */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
         <img 
-          src="/logo.svg" 
+          src="/logo.png" 
           alt="Marca d'água" 
-          className="w-[600px] h-[600px] object-contain opacity-10 select-none grayscale" 
+          className="w-[500px] h-[500px] object-contain opacity-10 select-none grayscale" 
         />
       </div>
 
@@ -227,12 +227,12 @@ export default function ReportPage({
         <header className="border-b border-slate-200 pb-6 text-center md:text-left flex flex-col md:flex-row justify-between items-start gap-4">
           <div className="space-y-3">
             <Image
-              src="/logo.svg"
+              src="/logo.png"
               alt="TEAuxilia Logo"
-              width={200}
-              height={60}
+              width={160}
+              height={50}
               priority
-              className="h-14 w-auto object-contain"
+              className="h-12 w-auto object-contain"
             />
             <div>
               <h1 className="text-2xl font-bold text-slate-800">
