@@ -260,16 +260,16 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
 
     const payload = {
       patient_id: patientId,
-      school_grade: schoolGrade,
-      medications,
-      allergies,
-      additional_disabilities: additionalDisabilities,
+      school_grade: schoolGrade || "",
+      medications: medications || "",
+      allergies: allergies || "",
+      additional_disabilities: additionalDisabilities || "",
       
       communication: JSON.stringify({ ...communication, ...Object.fromEntries(customItems?.communication?.map(i => [i, !!communication[i]]) || []) }),
       social_interaction: JSON.stringify({ ...socialInteraction, ...Object.fromEntries(customItems?.social_interaction?.map(i => [i, !!socialInteraction[i]]) || []) }),
       academic_skills: JSON.stringify({ ...academicSkills, ...Object.fromEntries(customItems?.academic_skills?.map(i => [i, !!academicSkills[i]]) || []) }),
       behaviors: JSON.stringify({ ...behaviors, ...Object.fromEntries(customItems?.behaviors?.map(i => [i, !!behaviors[i]]) || []) }),
-      stereotypies_details: stereotypiesDetails,
+      stereotypies_details: stereotypiesDetails || "",
       
       avd_feeding: JSON.stringify({ ...avdFeeding, ...Object.fromEntries(customItems?.avd_feeding?.map(i => [i, !!avdFeeding[i]]) || []) }),
       avd_hygiene: JSON.stringify({ ...avdHygiene, ...Object.fromEntries(customItems?.avd_hygiene?.map(i => [i, !!avdHygiene[i]]) || []) }),
@@ -278,22 +278,8 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
       avdi_belongings: JSON.stringify({ ...avdiBelongings, ...Object.fromEntries(customItems?.avdi_belongings?.map(i => [i, !!avdiBelongings[i]]) || []) }),
       avdi_routines: JSON.stringify({ ...avdiRoutines, ...Object.fromEntries(customItems?.avdi_routines?.map(i => [i, !!avdiRoutines[i]]) || []) }),
       
-      sensory_profile: JSON.stringify({ ...sensoryProfile, ...Object.fromEntries(customItems?.sensory_profile?.map(i => [i, !!sensoryProfile[i]]) || []) }),
-
-      favorite_toys: "",
-      favorite_cartoons: "",
-      favorite_foods: "",
-      child_motivators: "",
-      dislikes: "",
-      main_difficulty_1: "",
-      main_difficulty_2: "",
-      main_difficulty_3: "",
-      urgent_development_goal: "",
-      therapist_observations: "",
-      notes: "",
-      screen_time: ""
-    }
-
+      sensory_profile: JSON.stringify({ ...sensoryProfile, ...Object.fromEntries(customItems?.sensory_profile?.map(i => [i, !!sensoryProfile[i]]) || []) })
+    };
     let error = null
 
     if (existingId) {
