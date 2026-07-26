@@ -279,7 +279,7 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
       avdi_routines: { ...avdiRoutines, ...Object.fromEntries(customItems?.avdi_routines?.map(i => [i, !!avdiRoutines[i]]) || []) },
       
       // ADICIONE ESTA LINHA EXATAMENTE AQUI:
-      sensory_profile: { ...sensoryProfile, ...Object.fromEntries(customItems?.sensory_profile?.map(i => [i, !!sensoryProfile[i]]) || []) },
+      sensory_profile: JSON.stringify({ ...sensoryProfile, ...Object.fromEntries(customItems?.sensory_profile?.map(i => [i, !!sensoryProfile[i]]) || []) }),
 
       favorite_toys: "",
       favorite_cartoons: "",
