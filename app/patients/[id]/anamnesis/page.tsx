@@ -265,20 +265,19 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
       allergies,
       additional_disabilities: additionalDisabilities,
       
-      communication: { ...communication, ...Object.fromEntries(customItems?.communication?.map(i => [i, !!communication[i]]) || []) },
-      social_interaction: { ...socialInteraction, ...Object.fromEntries(customItems?.social_interaction?.map(i => [i, !!socialInteraction[i]]) || []) },
-      academic_skills: { ...academicSkills, ...Object.fromEntries(customItems?.academic_skills?.map(i => [i, !!academicSkills[i]]) || []) },
-      behaviors: { ...behaviors, ...Object.fromEntries(customItems?.behaviors?.map(i => [i, !!behaviors[i]]) || []) },
+      communication: JSON.stringify({ ...communication, ...Object.fromEntries(customItems?.communication?.map(i => [i, !!communication[i]]) || []) }),
+      social_interaction: JSON.stringify({ ...socialInteraction, ...Object.fromEntries(customItems?.social_interaction?.map(i => [i, !!socialInteraction[i]]) || []) }),
+      academic_skills: JSON.stringify({ ...academicSkills, ...Object.fromEntries(customItems?.academic_skills?.map(i => [i, !!academicSkills[i]]) || []) }),
+      behaviors: JSON.stringify({ ...behaviors, ...Object.fromEntries(customItems?.behaviors?.map(i => [i, !!behaviors[i]]) || []) }),
       stereotypies_details: stereotypiesDetails,
       
-      avd_feeding: { ...avdFeeding, ...Object.fromEntries(customItems?.avd_feeding?.map(i => [i, !!avdFeeding[i]]) || []) },
-      avd_hygiene: { ...avdHygiene, ...Object.fromEntries(customItems?.avd_hygiene?.map(i => [i, !!avdHygiene[i]]) || []) },
-      avd_bathroom: { ...avdBathroom, ...Object.fromEntries(customItems?.avd_bathroom?.map(i => [i, !!avdBathroom[i]]) || []) },
-      avd_dressing: { ...avdDressing, ...Object.fromEntries(customItems?.avd_dressing?.map(i => [i, !!avdDressing[i]]) || []) },
-      avdi_belongings: { ...avdiBelongings, ...Object.fromEntries(customItems?.avdi_belongings?.map(i => [i, !!avdiBelongings[i]]) || []) },
-      avdi_routines: { ...avdiRoutines, ...Object.fromEntries(customItems?.avdi_routines?.map(i => [i, !!avdiRoutines[i]]) || []) },
+      avd_feeding: JSON.stringify({ ...avdFeeding, ...Object.fromEntries(customItems?.avd_feeding?.map(i => [i, !!avdFeeding[i]]) || []) }),
+      avd_hygiene: JSON.stringify({ ...avdHygiene, ...Object.fromEntries(customItems?.avd_hygiene?.map(i => [i, !!avdHygiene[i]]) || []) }),
+      avd_bathroom: JSON.stringify({ ...avdBathroom, ...Object.fromEntries(customItems?.avd_bathroom?.map(i => [i, !!avdBathroom[i]]) || []) }),
+      avd_dressing: JSON.stringify({ ...avdDressing, ...Object.fromEntries(customItems?.avd_dressing?.map(i => [i, !!avdDressing[i]]) || []) }),
+      avdi_belongings: JSON.stringify({ ...avdiBelongings, ...Object.fromEntries(customItems?.avdi_belongings?.map(i => [i, !!avdiBelongings[i]]) || []) }),
+      avdi_routines: JSON.stringify({ ...avdiRoutines, ...Object.fromEntries(customItems?.avdi_routines?.map(i => [i, !!avdiRoutines[i]]) || []) }),
       
-      // ADICIONE ESTA LINHA EXATAMENTE AQUI:
       sensory_profile: JSON.stringify({ ...sensoryProfile, ...Object.fromEntries(customItems?.sensory_profile?.map(i => [i, !!sensoryProfile[i]]) || []) }),
 
       favorite_toys: "",
