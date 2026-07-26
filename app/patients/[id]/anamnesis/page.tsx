@@ -94,15 +94,7 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
   const [customSectionValues, setCustomSectionValues] = useState<Record<string, Record<string, boolean>>>({})
 
   // Buscar anamnese existente ao carregar a página
-  // Buscar anamnese existente ao carregar a página
-  // Buscar anamnese existente ao carregar a página
-  useEffect(() => {
-    if (!patientId || patientId === '123') {
-      setFetching(false)
-      return
-    }
-
-    async function fetchAnamnesis() {
+  async function fetchAnamnesis() {
       try {
         setFetching(true)
         const { data, error } = await supabase
@@ -146,7 +138,7 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
           try { if (typeof item.sensory_profile === 'string') setSensoryProfile(JSON.parse(item.sensory_profile)); else if (item.sensory_profile) setSensoryProfile(item.sensory_profile); } catch(e){}
           try { if (typeof item.avd_feeding === 'string') setAvdFeeding(JSON.parse(item.avd_feeding)); else if (item.avd_feeding) setAvdFeeding(item.avd_feeding); } catch(e){}
           try { if (typeof item.avd_hygiene === 'string') setAvdHygiene(JSON.parse(item.avd_hygiene)); else if (item.avd_hygiene) setAvdHygiene(item.avd_hygiene); } catch(e){}
-          try { if (typeof item.avd_bathroom === 'string') setAvdBathroom(JSON.parse(item.avd_bathroom)); else if (item.avd_bathroom) setAvdBathroom(item.avdBathroom); } catch(e){}
+          try { if (typeof item.avd_bathroom === 'string') setAvdBathroom(JSON.parse(item.avd_bathroom)); else if (item.avd_bathroom) setAvdBathroom(item.avd_bathroom); } catch(e){}
           try { if (typeof item.avd_dressing === 'string') setAvdDressing(JSON.parse(item.avd_dressing)); else if (item.avd_dressing) setAvdDressing(item.avd_dressing); } catch(e){}
           try { if (typeof item.avdi_belongings === 'string') setAvdiBelongings(JSON.parse(item.avdi_belongings)); else if (item.avdi_belongings) setAvdiBelongings(item.avdi_belongings); } catch(e){}
           try { if (typeof item.avdi_routines === 'string') setAvdiRoutines(JSON.parse(item.avdi_routines)); else if (item.avdi_routines) setAvdiRoutines(item.avdi_routines); } catch(e){}
@@ -167,9 +159,6 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
         setFetching(false)
       }
     }
-
-    fetchAnamnesis()
-  }, [patientId])
 
   const handleToggle = (
     state: Record<string, boolean>,
