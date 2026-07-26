@@ -264,19 +264,25 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
       allergies,
       additional_disabilities: additionalDisabilities,
       communication: { ...communication, ...Object.fromEntries(customItems.communication.map(i => [i, !!communication[i]])) },
-      social_interaction: { ...socialInteraction, ...Object.fromEntries(customItems.socialInteraction.map(i => [i, !!socialInteraction[i]])) },
-      academic_skills: { ...academicSkills, ...Object.fromEntries(customItems.academicSkills.map(i => [i, !!academicSkills[i]])) },
+      social_interaction: { ...socialInteraction, ...Object.fromEntries(customItems.social_interaction.map(i => [i, !!socialInteraction[i]])) },
+      academic_skills: { ...academicSkills, ...Object.fromEntries(customItems.academic_skills.map(i => [i, !!academicSkills[i]])) },
       behaviors: { ...behaviors, ...Object.fromEntries(customItems.behaviors.map(i => [i, !!behaviors[i]])) },
       stereotypies_details: stereotypiesDetails,
-      avd_feeding: { ...avdFeeding, ...Object.fromEntries(customItems.avdFeeding.map(i => [i, !!avdFeeding[i]])) },
-      avd_hygiene: { ...avdHygiene, ...Object.fromEntries(customItems.avdHygiene.map(i => [i, !!avdHygiene[i]])) },
-      avd_bathroom: { ...avdBathroom, ...Object.fromEntries(customItems.avdBathroom.map(i => [i, !!avdBathroom[i]])) },
-      avd_dressing: { ...avdDressing, ...Object.fromEntries(customItems.avdDressing.map(i => [i, !!avdDressing[i]])) },
-      avdi_belongings: { ...avdiBelongings, ...Object.fromEntries(customItems.avdiBelongings.map(i => [i, !!avdiBelongings[i]])) },
-      avdi_routines: { ...avdiRoutines, ...Object.fromEntries(customItems.avdiRoutines.map(i => [i, !!avdiRoutines[i]])) },
-      avdi_tech_comm: { ...avdiTechComm, ...Object.fromEntries(customItems.avdiTechComm.map(i => [i, !!avdiTechComm[i]])) },
-      screen_time: screenTime,
-      sensory_profile: { ...sensoryProfile, ...Object.fromEntries(customItems.sensoryProfile.map(i => [i, !!sensoryProfile[i]])) },
+      avd_feeding: { ...avdFeeding, ...Object.fromEntries(customItems.avd_feeding.map(i => [i, !!avdFeeding[i]])) },
+      avd_hygiene: { ...avdHygiene, ...Object.fromEntries(customItems.avd_hygiene.map(i => [i, !!avdHygiene[i]])) },
+      avd_bathroom: { ...avdBathroom, ...Object.fromEntries(customItems.avd_bathroom.map(i => [i, !!avdBathroom[i]])) },
+      avd_dressing: { ...avdDressing, ...Object.fromEntries(customItems.avd_dressing.map(i => [i, !!avdDressing[i]])) },
+      avdi_belongings: { ...avdiBelongings, ...Object.fromEntries(customItems.avdi_belongings.map(i => [i, !!avdiBelongings[i]])) },
+      avdi_routines: { ...avdiRoutines, ...Object.fromEntries(customItems.avdi_routines.map(i => [i, !!avdiRoutines[i]])) },
+      
+      // ADICIONE ESTES CAMPOS QUE FALTAVAM OU ESTAVAM COM NOMES DIFERENTES:
+      main_complaint: mainComplaint,
+      pregnancy_history: pregnancyHistory,
+      development_milestones: developmentMilestones,
+      communication_type: communicationType,
+      sensory_profile: sensoryProfile,
+      routine_behavior: routineBehavior,
+      avdi_tech_comm: avdiTechComm,
       favorite_toys: favoriteToys,
       favorite_cartoons: favoriteCartoons,
       favorite_foods: favoriteFoods,
@@ -288,7 +294,8 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
       urgent_development_goal: urgentGoal,
       therapist_observations: therapistObs,
       notes,
-      custom_sections: { customSections, customSectionValues }
+      screen_time: screenTime,
+      custom_sections: customSections
     }
 
     let error = null
