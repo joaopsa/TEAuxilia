@@ -11,11 +11,16 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export default function AnamnesisPage({ params }: { params: Promise<{ id: string }> | { id: string } }) {
+export default function AnamnesisPage({ params }: { params: { id: string } }) {
   const router = useRouter()
-  
-  const resolvedParams = params instanceof Promise ? React.use(params) : params
-  const patientId = resolvedParams.id
+  const [patientId, setPatientId] = useState<string>('')
+
+  // Resolve o ID de forma limpa e síncrona após a montagem, sem travar os cliques
+  React.useEffect(() => {
+    Promise.resolve(params).then((resolved) => {
+      setPatientId(resolved.id)
+    })
+  }, [params])
 
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
