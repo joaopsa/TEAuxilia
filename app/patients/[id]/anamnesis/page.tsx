@@ -106,13 +106,12 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
           .from('anamneses')
           .select('*')
           .eq('patient_id', patientId)
-          .order('created_at', { ascending: false })
-          .limit(1)
+          .single()
 
         if (error) {
           console.error('Erro ao buscar anamnese:', error)
-        } else if (data && data.length > 0) {
-          const item = data[0]
+        } else if (data) {
+          const item = data
           setExistingId(item.id)
 
           setSchoolGrade(item.school_grade || '')
@@ -136,18 +135,18 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
           setTherapistObs(item.therapist_observations || '')
           setNotes(item.notes || '')
 
-          if (item.communication) setCommunication(item.communication)
-          if (item.social_interaction) setSocialInteraction(item.social_interaction)
-          if (item.academic_skills) setAcademicSkills(item.academic_skills)
-          if (item.behaviors) setBehaviors(item.behaviors)
-          if (item.sensory_profile) setSensoryProfile(item.sensory_profile)
-          if (item.avd_feeding) setAvdFeeding(item.avd_feeding)
-          if (item.avd_hygiene) setAvdHygiene(item.avd_hygiene)
-          if (item.avd_bathroom) setAvdBathroom(item.avd_bathroom)
-          if (item.avd_dressing) setAvdDressing(item.avd_dressing)
-          if (item.avdi_belongings) setAvdiBelongings(item.avdi_belongings)
-          if (item.avdi_routines) setAvdiRoutines(item.avdi_routines)
-          if (item.avdi_tech_comm) setAvdiTechComm(item.avdi_tech_comm)
+          try { if (typeof item.communication === 'string') setCommunication(JSON.parse(item.communication)); else if (item.communication) setCommunication(item.communication); } catch(e){}
+          try { if (typeof item.social_interaction === 'string') setSocialInteraction(JSON.parse(item.social_interaction)); else if (item.social_interaction) setSocialInteraction(item.social_interaction); } catch(e){}
+          try { if (typeof item.academic_skills === 'string') setAcademicSkills(JSON.parse(item.academic_skills)); else if (item.academic_skills) setAcademicSkills(item.academic_skills); } catch(e){}
+          try { if (typeof item.behaviors === 'string') setBehaviors(JSON.parse(item.behaviors)); else if (item.behaviors) setBehaviors(item.behaviors); } catch(e){}
+          try { if (typeof item.sensory_profile === 'string') setSensoryProfile(JSON.parse(item.sensory_profile)); else if (item.sensory_profile) setSensoryProfile(item.sensory_profile); } catch(e){}
+          try { if (typeof item.avd_feeding === 'string') setAvdFeeding(JSON.parse(item.avd_feeding)); else if (item.avd_feeding) setAvdFeeding(item.avd_feeding); } catch(e){}
+          try { if (typeof item.avd_hygiene === 'string') setAvdHygiene(JSON.parse(item.avd_hygiene)); else if (item.avd_hygiene) setAvdHygiene(item.avd_hygiene); } catch(e){}
+          try { if (typeof item.avd_bathroom === 'string') setAvdBathroom(JSON.parse(item.avd_bathroom)); else if (item.avd_bathroom) setAvdBathroom(item.avd_bathroom); } catch(e){}
+          try { if (typeof item.avd_dressing === 'string') setAvdDressing(JSON.parse(item.avd_dressing)); else if (item.avd_dressing) setAvdDressing(item.avd_dressing); } catch(e){}
+          try { if (typeof item.avdi_belongings === 'string') setAvdiBelongings(JSON.parse(item.avdi_belongings)); else if (item.avdi_belongings) setAvdiBelongings(item.avdi_belongings); } catch(e){}
+          try { if (typeof item.avdi_routines === 'string') setAvdiRoutines(JSON.parse(item.avdi_routines)); else if (item.avdi_routines) setAvdiRoutines(item.avdi_routines); } catch(e){}
+          try { if (typeof item.avdi_tech_comm === 'string') setAvdiTechComm(JSON.parse(item.avdi_tech_comm)); else if (item.avdi_tech_comm) setAvdiTechComm(item.avdi_tech_comm); } catch(e){}
 
           // Restaurar custom_sections se houver
           if (item.custom_sections) {
@@ -174,7 +173,7 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
     setState: React.Dispatch<React.SetStateAction<Record<string, boolean>>>,
     key: string
   ) => {
-    setState({ ...state, [key]: !state[key] })
+    setState(prev => ({ ...prev, [key]: !prev[key] }))
   }
 
   const handleAddCustomItem = (sectionKey: string, setState: React.Dispatch<React.SetStateAction<Record<string, boolean>>>) => {
