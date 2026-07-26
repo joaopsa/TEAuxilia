@@ -249,58 +249,53 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
+    setLoading(true);
 
-    if (!patientId || patientId === '123') {
-      alert('Atenção: Acesse a anamnese diretamente a partir da lista de pacientes para salvar com um ID válido')
-      return
+    try {
+      const payload = {
+        patient_id: patientId,
+        school_grade: schoolGrade || "",
+        medications: medications || "",
+        allergies: allergies || "",
+        additional_disabilities: additionalDisabilities || "",
+        
+        communication: JSON.stringify(communication || {}),
+        social_interaction: JSON.stringify(socialInteraction || {}),
+        academic_skills: JSON.stringify(academicSkills || {}),
+        behaviors: JSON.stringify(behaviors || {}),
+        stereotypies_details: stereotypiesDetails || "",
+        
+        avd_feeding: JSON.stringify(avdFeeding || {}),
+        avd_hygiene: JSON.stringify(avdHygiene || {}),
+        avd_bathroom: JSON.stringify(avdBathroom || {}),
+        avd_dressing: JSON.stringify(avdDressing || {}),
+        avdi_belongings: JSON.stringify(avdiBelongings || {}),
+        avdi_routines: JSON.stringify(avdiRoutines || {}),
+        sensory_profile: JSON.stringify(sensoryProfile || {})
+      };
+
+      let error = null;
+
+      if (existingId) {
+        const res = await supabase.from('anamneses').update(payload).eq('id', existingId);
+        error = res.error;
+      } else {
+        const res = await supabase.from('anamneses').insert([payload]);
+        error = res.error;
+      }
+
+      if (error) throw error;
+
+      alert('Anamnese salva com sucesso!');
+    } catch (err: any) {
+      console.error('Erro detalhado:', err);
+      alert('Erro ao salvar anamnese: ' + (err.message || 'Falha de conexão'));
+    } finally {
+      // ISSO DESTRAVA O BOTÃO IMEDIATAMENTE APÓS O SUCESSO OU ERRO
+      setLoading(false);
     }
-
-    setLoading(true)
-
-    const payload = {
-      patient_id: patientId,
-      school_grade: schoolGrade || "",
-      medications: medications || "",
-      allergies: allergies || "",
-      additional_disabilities: additionalDisabilities || "",
-      
-      communication: JSON.stringify({ ...communication, ...Object.fromEntries(customItems?.communication?.map(i => [i, !!communication[i]]) || []) }),
-      social_interaction: JSON.stringify({ ...socialInteraction, ...Object.fromEntries(customItems?.social_interaction?.map(i => [i, !!socialInteraction[i]]) || []) }),
-      academic_skills: JSON.stringify({ ...academicSkills, ...Object.fromEntries(customItems?.academic_skills?.map(i => [i, !!academicSkills[i]]) || []) }),
-      behaviors: JSON.stringify({ ...behaviors, ...Object.fromEntries(customItems?.behaviors?.map(i => [i, !!behaviors[i]]) || []) }),
-      stereotypies_details: stereotypiesDetails || "",
-      
-      avd_feeding: JSON.stringify({ ...avdFeeding, ...Object.fromEntries(customItems?.avd_feeding?.map(i => [i, !!avdFeeding[i]]) || []) }),
-      avd_hygiene: JSON.stringify({ ...avdHygiene, ...Object.fromEntries(customItems?.avd_hygiene?.map(i => [i, !!avdHygiene[i]]) || []) }),
-      avd_bathroom: JSON.stringify({ ...avdBathroom, ...Object.fromEntries(customItems?.avd_bathroom?.map(i => [i, !!avdBathroom[i]]) || []) }),
-      avd_dressing: JSON.stringify({ ...avdDressing, ...Object.fromEntries(customItems?.avd_dressing?.map(i => [i, !!avdDressing[i]]) || []) }),
-      avdi_belongings: JSON.stringify({ ...avdiBelongings, ...Object.fromEntries(customItems?.avdi_belongings?.map(i => [i, !!avdiBelongings[i]]) || []) }),
-      avdi_routines: JSON.stringify({ ...avdiRoutines, ...Object.fromEntries(customItems?.avdi_routines?.map(i => [i, !!avdiRoutines[i]]) || []) }),
-      
-      sensory_profile: JSON.stringify({ ...sensoryProfile, ...Object.fromEntries(customItems?.sensory_profile?.map(i => [i, !!sensoryProfile[i]]) || []) })
-    };
-    let error = null
-
-    if (existingId) {
-      // Atualiza a anamnese existente (Modo Edição)
-      const res = await supabase.from('anamneses').update(payload).eq('id', existingId)
-      error = res.error
-    } else {
-      // Cria um novo registro (Nova Anamnese)
-      const res = await supabase.from('anamneses').insert([payload])
-      error = res.error
-    }
-
-    if (error) {
-      console.error('Erro detalhado Supabase:', error)
-      alert(`Erro ao salvar anamnese: ${error.message}`)
-    } else {
-      alert('Anamnese salva com sucesso!')
-      router.push(`/patients/${patientId}/view-anamnesis`)
-    }
-    setLoading(false)
-  }
+  };
 
   const renderCheckboxes = (
     options: string[],
