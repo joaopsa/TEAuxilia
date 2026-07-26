@@ -20,6 +20,23 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
   const [existingId, setExistingId] = useState<string | null>(null)
+  // Adicione estes estados que faltavam para evitar o erro do TypeScript:
+  const [mainComplaint, setMainComplaint] = useState('')
+  const [pregnancyHistory, setPregnancyHistory] = useState('')
+  const [developmentMilestones, setDevelopmentMilestones] = useState('')
+  const [communicationType, setCommunicationType] = useState('')
+  const [sensoryProfile, setSensoryProfile] = useState({})
+  const [routineBehavior, setRoutineBehavior] = useState({})
+  const [avdiTechComm, setAvdiTechComm] = useState({})
+  const [favoriteToys, setFavoriteToys] = useState('')
+  const [favoriteCartoons, setFavoriteCartoons] = useState('')
+  const [favoriteFoods, setFavoriteFoods] = useState('')
+  const [childMotivators, setChildMotivators] = useState('')
+  const [diff1, setDiff1] = useState('')
+  const [diff2, setDiff2] = useState('')
+  const [diff3, setDiff3] = useState('')
+  const [urgentGoal, setUrgentGoal] = useState('')
+  const [therapistObs, setTherapistObs] = useState('')
 
   // Campos de texto
   const [schoolGrade, setSchoolGrade] = useState('')
