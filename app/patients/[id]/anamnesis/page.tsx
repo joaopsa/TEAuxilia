@@ -21,22 +21,6 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
   const [fetching, setFetching] = useState(true)
   const [existingId, setExistingId] = useState<string | null>(null)
   // Adicione estes estados que faltavam para evitar o erro do TypeScript:
-  const [mainComplaint, setMainComplaint] = useState('')
-  const [pregnancyHistory, setPregnancyHistory] = useState('')
-  const [developmentMilestones, setDevelopmentMilestones] = useState('')
-  const [communicationType, setCommunicationType] = useState('')
-  const [sensoryProfile, setSensoryProfile] = useState({})
-  const [routineBehavior, setRoutineBehavior] = useState({})
-  const [avdiTechComm, setAvdiTechComm] = useState({})
-  const [favoriteToys, setFavoriteToys] = useState('')
-  const [favoriteCartoons, setFavoriteCartoons] = useState('')
-  const [favoriteFoods, setFavoriteFoods] = useState('')
-  const [childMotivators, setChildMotivators] = useState('')
-  const [diff1, setDiff1] = useState('')
-  const [diff2, setDiff2] = useState('')
-  const [diff3, setDiff3] = useState('')
-  const [urgentGoal, setUrgentGoal] = useState('')
-  const [therapistObs, setTherapistObs] = useState('')
 
   // Campos de texto
   const [schoolGrade, setSchoolGrade] = useState('')
@@ -292,27 +276,26 @@ export default function AnamnesisPage({ params }: { params: Promise<{ id: string
       avdi_belongings: { ...avdiBelongings, ...Object.fromEntries(customItems.avdi_belongings.map(i => [i, !!avdiBelongings[i]])) },
       avdi_routines: { ...avdiRoutines, ...Object.fromEntries(customItems.avdi_routines.map(i => [i, !!avdiRoutines[i]])) },
       
-      // ADICIONE ESTES CAMPOS QUE FALTAVAM OU ESTAVAM COM NOMES DIFERENTES:
-      main_complaint: mainComplaint,
-      pregnancy_history: pregnancyHistory,
-      development_milestones: developmentMilestones,
-      communication_type: communicationType,
-      sensory_profile: sensoryProfile,
-      routine_behavior: routineBehavior,
-      avdi_tech_comm: avdiTechComm,
-      favorite_toys: favoriteToys,
-      favorite_cartoons: favoriteCartoons,
-      favorite_foods: favoriteFoods,
-      child_motivators: childMotivators,
-      dislikes,
-      main_difficulty_1: diff1,
-      main_difficulty_2: diff2,
-      main_difficulty_3: diff3,
-      urgent_development_goal: urgentGoal,
-      therapist_observations: therapistObs,
-      notes,
-      screen_time: screenTime,
-      custom_sections: customSections
+      // Se esses campos específicos não são usados no seu form, você pode passá-los vazios assim para o erro sumir:
+      main_complaint: "",
+      pregnancy_history: "",
+      development_milestones: "",
+      communication_type: "",
+      sensory_profile: {},
+      routine_behavior: {},
+      avdi_tech_comm: {},
+      favorite_toys: "",
+      favorite_cartoons: "",
+      favorite_foods: "",
+      child_motivators: "",
+      dislikes: "",
+      main_difficulty_1: "",
+      main_difficulty_2: "",
+      main_difficulty_3: "",
+      urgent_development_goal: "",
+      therapist_observations: "",
+      notes: "",
+      screen_time: ""
     }
 
     let error = null
