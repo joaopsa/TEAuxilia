@@ -15,6 +15,17 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const [patientId, setPatientId] = useState<string>('')
 
+  const handleToggle = (
+  state: Record<string, boolean>, 
+  setState: React.Dispatch<React.SetStateAction<Record<string, boolean>>>, 
+  item: string
+) => {
+  setState((prev) => ({
+    ...prev,
+    [item]: !prev[item]
+  }))
+}
+
   // Resolve o ID de forma limpa e síncrona após a montagem, sem travar os cliques
   React.useEffect(() => {
     Promise.resolve(params).then((resolved) => {
@@ -97,34 +108,37 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
   async function fetchAnamnesis() {
   try {
     setFetching(true)
-    const { data, error } = await supabase
+
+    // Cria um timeout de segurança de 3 segundos para o Supabase não travar nunca mais
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Timeout ao buscar anamnese')), 3000)
+    )
+
+    const fetchPromise = supabase
       .from('anamneses')
       .select('*')
       .eq('patient_id', patientId)
       .order('created_at', { ascending: false })
       .limit(1)
 
+    const { data, error }: any = await Promise.race([fetchPromise, timeoutPromise])
+
     if (error) {
       console.error('Erro ao buscar anamnese:', error)
     } else if (data && data.length > 0) {
-      const item = data[0] as any
-      // ... (mantenha todo o preenchimento dos seus estados que você já tem aqui dentro) ...
+      const item = data[0]
+      // Preenche todos os campos com os dados salvos no banco
+      setSchoolGrade(item.school_grade || '')
+      setMedications(item.medications || '')
+      setStereotypiesDetails(item.stereotypies_details || '')
+      // ... (mantenha os outros sets que você já tem aqui)
     }
   } catch (err) {
-    console.error('Erro geral ao buscar anamnese:', err)
+    console.warn('Aviso no carregamento da anamnese (prosseguindo normalmente):', err)
   } finally {
-    // ADICIONE ESTA LINHA: Garante que o loading sempre desliga, achando ou não o registro
-    setFetching(false) 
+    setFetching(false) // Garante que a tela abre automaticamente, com ou sem dados salvos!
   }
 }
-
-  const handleToggle = (
-    state: Record<string, boolean>,
-    setState: React.Dispatch<React.SetStateAction<Record<string, boolean>>>,
-    key: string
-  ) => {
-    setState(prev => ({ ...prev, [key]: !prev[key] }))
-  }
 
   const handleAddCustomItem = (sectionKey: string, setState: React.Dispatch<React.SetStateAction<Record<string, boolean>>>) => {
     const text = (newItemInputs[sectionKey] || '').trim()
@@ -319,14 +333,8 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
 
   if (fetching) {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center">
       <p className="text-slate-600 font-medium">Carregando anamnese...</p>
-      <button 
-        onClick={() => setFetching(false)}
-        className="text-xs bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 transition cursor-pointer"
-      >
-        Forçar Abertura da Tela
-      </button>
     </div>
   )
 }
