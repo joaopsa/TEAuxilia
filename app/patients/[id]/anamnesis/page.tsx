@@ -107,7 +107,6 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
   // Buscar anamnese existente ao carregar a página
   async function fetchAnamnesis() {
   try {
-    setFetching(true)
 
     // Cria um timeout de segurança de 3 segundos para o Supabase não travar nunca mais
     const timeoutPromise = new Promise((_, reject) => 
@@ -331,13 +330,7 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
     )
   }
 
-  if (fetching) {
-  return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-      <p className="text-slate-600 font-medium">Carregando anamnese...</p>
-    </div>
-  )
-}
+
 
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-12">
