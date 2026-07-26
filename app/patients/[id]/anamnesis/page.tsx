@@ -318,12 +318,18 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
   }
 
   if (fetching) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-600 font-medium">Carregando anamnese...</p>
-      </div>
-    )
-  }
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4">
+      <p className="text-slate-600 font-medium">Carregando anamnese...</p>
+      <button 
+        onClick={() => setFetching(false)}
+        className="text-xs bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 transition cursor-pointer"
+      >
+        Forçar Abertura da Tela
+      </button>
+    </div>
+  )
+}
 
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-12">
