@@ -257,50 +257,65 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
     e.preventDefault();
     setLoading(true);
 
-    setTimeout(async () => {
-      try {
-        const payload = {
-          patient_id: patientId,
-          school_grade: schoolGrade || "",
-          medications: medications || "",
-          allergies: allergies || "",
-          additional_disabilities: additionalDisabilities || "",
-          
-          communication: JSON.stringify(communication || {}),
-          social_interaction: JSON.stringify(socialInteraction || {}),
-          academic_skills: JSON.stringify(academicSkills || {}),
-          behaviors: JSON.stringify(behaviors || {}),
-          stereotypies_details: stereotypiesDetails || "",
-          
-          avd_feeding: JSON.stringify(avdFeeding || {}),
-          avd_hygiene: JSON.stringify(avdHygiene || {}),
-          avd_bathroom: JSON.stringify(avdBathroom || {}),
-          avd_dressing: JSON.stringify(avdDressing || {}),
-          avdi_belongings: JSON.stringify(avdiBelongings || {}),
-          avdi_routines: JSON.stringify(avdiRoutines || {}),
-          sensory_profile: JSON.stringify(sensoryProfile || {})
-        };
+    try {
+      const payload = {
+        patient_id: patientId,
+        school_grade: schoolGrade || "",
+        medications: medications || "",
+        allergies: allergies || "",
+        additional_disabilities: additionalDisabilities || "",
+        
+        communication: JSON.stringify(communication || {}),
+        social_interaction: JSON.stringify(socialInteraction || {}),
+        academic_skills: JSON.stringify(academicSkills || {}),
+        behaviors: JSON.stringify(behaviors || {}),
+        stereotypies_details: stereotypiesDetails || "",
+        
+        avd_feeding: JSON.stringify(avdFeeding || {}),
+        avd_hygiene: JSON.stringify(avdHygiene || {}),
+        avd_bathroom: JSON.stringify(avdBathroom || {}),
+        avd_dressing: JSON.stringify(avdDressing || {}),
+        avdi_belongings: JSON.stringify(avdiBelongings || {}),
+        avdi_routines: JSON.stringify(avdiRoutines || {}),
+        sensory_profile: JSON.stringify(sensoryProfile || {})
+      };
 
-        let error = null;
+      // Verifica se já existe uma anamnese para este paciente no banco
+      const { data: existingData } = await supabase
+        .from('anamneses')
+        .select('id')
+        .eq('patient_id', patientId)
+        .maybeSingle();
 
-        if (existingId) {
-          const res = await supabase.from('anamneses').update(payload).eq('id', existingId);
-          error = res.error;
-        } else {
-          const res = await supabase.from('anamneses').insert([payload]);
-          error = res.error;
-        }
+      let error = null;
 
-        if (error) throw error;
-
-        alert('Anamnese salva com sucesso!');
-      } catch (err: any) {
-        console.error('Erro detalhado:', err);
-        alert('Erro ao salvar anamnese: ' + (err.message || 'Falha de conexão'));
-      } finally {
-        setLoading(false);
+      if (existingData?.id) {
+        // Se já existe, atualiza usando o ID real encontrado no banco
+        const res = await supabase
+          .from('anamneses')
+          .update(payload)
+          .eq('id', existingData.id);
+        error = res.error;
+      } else {
+        // Se não existe, insere um novo registro
+        const res = await supabase
+          .from('anamneses')
+          .insert([payload]);
+        error = res.error;
       }
-    }, 50);
+
+      if (error) {
+        console.error("Erro do Supabase:", error);
+        throw new Error(error.message);
+      }
+
+      alert('Anamnese salva com sucesso!');
+    } catch (err: any) {
+      console.error('Erro detalhado no salvamento:', err);
+      alert('Erro ao salvar anamnese: ' + (err.message || 'Falha de conexão com o banco'));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderCheckboxes = (
