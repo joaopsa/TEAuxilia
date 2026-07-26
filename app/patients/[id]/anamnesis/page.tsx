@@ -94,24 +94,26 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
   const [customSectionValues, setCustomSectionValues] = useState<Record<string, Record<string, boolean>>>({})
 
   // Buscar anamnese existente ao carregar a página
+  // Buscar anamnese existente ao carregar a página
   useEffect(() => {
-    async function fetchAnamnesis() {
-      if (!patientId || patientId === '123') {
-        setFetching(false)
-        return
-      }
+    if (!patientId || patientId === '123') {
+      setFetching(false)
+      return
+    }
 
+    async function fetchAnamnesis() {
       try {
+        setFetching(true)
         const { data, error } = await supabase
           .from('anamneses')
           .select('*')
           .eq('patient_id', patientId)
-          .single()
+          .maybeSingle()
 
         if (error) {
           console.error('Erro ao buscar anamnese:', error)
         } else if (data) {
-          const item = data
+          const item = data as any
           setExistingId(item.id)
 
           setSchoolGrade(item.school_grade || '')
@@ -148,7 +150,6 @@ export default function AnamnesisPage({ params }: { params: { id: string } }) {
           try { if (typeof item.avdi_routines === 'string') setAvdiRoutines(JSON.parse(item.avdi_routines)); else if (item.avdi_routines) setAvdiRoutines(item.avdi_routines); } catch(e){}
           try { if (typeof item.avdi_tech_comm === 'string') setAvdiTechComm(JSON.parse(item.avdi_tech_comm)); else if (item.avdi_tech_comm) setAvdiTechComm(item.avdi_tech_comm); } catch(e){}
 
-          // Restaurar custom_sections se houver
           if (item.custom_sections) {
             if (item.custom_sections.customSections) {
               setCustomSections(item.custom_sections.customSections)
